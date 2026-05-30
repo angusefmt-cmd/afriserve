@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AfriServe — Find Verified Local Professionals</title>
+<meta name="description" content="Find trusted, verified service providers across Africa. WhatsApp them directly in one tap." />
+<meta name="theme-color" content="#0a1a0f" />
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="AfriServe" />
+<link rel="apple-touch-icon" href="/icons/icon-512.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css" />
+
+<style>
+/* ── Reset & Base ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green:       #1d9e75;
+  --green-dark:  #0f6e56;
+  --green-deep:  #083d30;
+  --green-light: #e1f5ee;
+  --green-mid:   #9fe1cb;
+  --bg:          #f7f9f7;
+  --bg-card:     #ffffff;
+  --bg-2:        #f0f4f1;
+  --text:        #0d1f16;
+  --text-2:      #3d5245;
+  --text-3:      #7a9485;
+  --border:      rgba(29,158,117,0.15);
+  --border-2:    rgba(29,158,117,0.25);
+  --shadow:      0 2px 16px rgba(10,40,24,0.07);
+  --radius:      12px;
+  --radius-lg:   18px;
+  --radius-xl:   26px;
+  --font-head:   'Syne', sans-serif;
+  --font-body:   'DM Sans', sans-serif;
+  --wa:          #25d366;
+  --wa-dark:     #1aab53;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--font-body); cursor: pointer; }
+input, select, textarea { font-family: var(--font-body); }
+
+/* ── Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 3px; }
+
+/* ── Utility ──────────────────────────────────────────── */
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+
+/* ── Animations ───────────────────────────────────────── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes shimmer  { 0%,100%{opacity:.5} 50%{opacity:1} }
+@keyframes spinPulse{ 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.1)} 100%{transform:rotate(360deg) scale(1)} }
+@keyframes slideDown{ from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes toastIn  { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+.fade-up { animation: fadeUp 0.45s ease both; }
+
+/* ── Top Nav ──────────────────────────────────────────── */
+.nav {
+  position: sticky; top: 0; z-index: 90;
+  background: rgba(247,249,247,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 clamp(16px,4vw,48px);
+  height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 700;
+  color: var(--green-dark);
+  letter-spacing: -0.5px;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  animation: shimmer 2s ease infinite;
+}
+.nav-right { display: flex; gap: 8px; align-items: center; }
+.nav-tag {
+  font-size: 11px; font-weight: 500;
+  color: var(--green-dark);
+  background: var(--green-light);
+  border: 1px solid var(--border-2);
+  padding: 3px 10px; border-radius: 100px;
+}
+.nav-btn {
+  height: 34px; padding: 0 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border-2);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 13px; font-weight: 500;
+  transition: all .2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.nav-btn:hover { background: var(--green-light); color: var(--green-dark); border-color: var(--green); }
+.nav-btn.primary { background: var(--green); color: #fff; border-color: var(--green); }
+.nav-btn.primary:hover { background: var(--green-dark); }
+
+/* ── Hero ─────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0a2018 0%, #0f3325 50%, #0a2018 100%);
+  padding: clamp(48px,8vw,88px) clamp(16px,4vw,48px) clamp(40px,6vw,72px);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 30%, rgba(29,158,117,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(29,158,117,0.10) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero-grid {
+  max-width: 1060px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 40px; align-items: end;
+  position: relative; z-index: 1;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--green-mid);
+  margin-bottom: 16px;
+}
+.hero-eyebrow-line { height: 1px; width: 28px; background: var(--green); }
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(34px,6vw,64px);
+  font-weight: 700; line-height: 1.08;
+  color: #fff; letter-spacing: -1.5px;
+  margin-bottom: 18px;
+}
+.hero h1 em { font-style: normal; color: var(--green-mid); }
+.hero-sub {
+  font-size: clamp(14px,2vw,17px);
+  color: rgba(255,255,255,0.55);
+  max-width: 480px; line-height: 1.65;
+  margin-bottom: 32px;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-hero {
+  height: 46px; padding: 0 24px; border-radius: 100px;
+  font-size: 14px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 7px;
+  border: none; transition: all .2s; cursor: pointer;
+}
+.btn-hero.solid { background: var(--green); color: #fff; }
+.btn-hero.solid:hover { background: var(--green-dark); transform: translateY(-1px); }
+.btn-hero.outline { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.2); }
+.btn-hero.outline:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.hero-stats { display: flex; flex-direction: column; gap: 12px; min-width: 140px; }
+.hero-stat {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 14px 18px; text-align: right;
+}
+.hero-stat-n { font-family: var(--font-head); font-size: 26px; font-weight: 700; color: var(--green-mid); line-height: 1; }
+.hero-stat-l { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 3px; letter-spacing: .04em; }
+
+/* ── Search Block ─────────────────────────────────────── */
+.search-block {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 20px clamp(16px,4vw,48px);
+  position: sticky; top: 58px; z-index: 80;
+  box-shadow: var(--shadow);
+}
+.search-block-inner { max-width: 1060px; margin: 0 auto; }
+.search-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.search-input-wrap {
+  flex: 1; position: relative;
+}
+.search-input-wrap i {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 17px; color: var(--text-3); pointer-events: none;
+}
+.search-input {
+  width: 100%; height: 42px;
+  border: 1.5px solid var(--border-2);
+  border-radius: 100px;
+  padding: 0 14px 0 42px;
+  font-size: 14px; color: var(--text);
+  background: var(--bg);
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+.search-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29,158,117,0.12); }
+.search-input::placeholder { color: var(--text-3); }
+.city-select {
+  height: 42px; border: 1.5px solid var(--border-2);
+  border-radius: 100px; padding: 0 16px;
+  font-size: 13px; color: var(--text);
+  background: var(--bg); outline: none;
+  min-width: 130px; cursor: pointer;
+  transition: border-color .2s;
+}
+.city-select:focus { border-color: var(--green); }
+.ai-btn {
+  height: 42px; padding: 0 20px; border-radius: 100px;
+  border: none; background: var(--green); color: #fff;
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 7px;
+  transition: all .2s; white-space: nowrap;
+}
+.ai-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+.ai-btn:active { transform: translateY(0); }
+.ai-btn.loading { pointer-events: none; opacity: .8; }
+.ai-btn .spin { animation: spinPulse 1s linear infinite; display: inline-block; }
+
+/* ── Category chips ───────────────────────────────────── */
+.chips { display: flex; gap: 7px; flex-wrap: wrap; }
+.chip {
+  height: 32px; padding: 0 14px; border-radius: 100px;
+  border: 1.5px solid var(--border-2);
+  background: var(--bg); color: var(--text-2);
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+.chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* ── AI Panel ─────────────────────────────────────────── */
+.ai-panel {
+  max-width: 1060px; margin: 20px auto 0;
+  background: var(--bg-card);
+  border: 1.5px solid var(--green);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: none;
+  animation: slideDown .3s ease;
+}
+.ai-panel.visible { display: flex; gap: 12px; align-items: flex-start; }
+.ai-panel-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0; margin-top: 6px;
+  animation: shimmer 1.5s ease infinite;
+}
+.ai-panel-label { font-size: 11px; font-weight: 600; color: var(--green); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.ai-panel-text { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+.ai-panel-text.thinking { color: var(--text-3); font-style: italic; }
+
+/* ── Main layout ──────────────────────────────────────── */
+.main { max-width: 1060px; margin: 0 auto; padding: 28px clamp(16px,4vw,48px) 80px; }
+
+.section-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 18px;
+}
+.section-title { font-family: var(--font-head); font-size: 17px; font-weight: 600; color: var(--text); }
+.section-count { font-size: 13px; color: var(--text-3); }
+
+/* ── Provider grid ────────────────────────────────────── */
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* ── Provider card ────────────────────────────────────── */
+.p-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  cursor: pointer;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  animation: fadeUp 0.4s ease both;
+}
+.p-card:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: var(--shadow); }
+.p-card-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 12px; }
+.avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 15px; font-weight: 700;
+  flex-shrink: 0;
+}
+.p-name { font-family: var(--font-head); font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.p-cat { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.p-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 11px; }
+.badge {
+  font-size: 10px; font-weight: 600; padding: 3px 8px;
+  border-radius: 100px; letter-spacing: .02em;
+}
+.badge-verified { background: var(--green-light); color: var(--green-dark); }
+.badge-top      { background: #faeeda; color: #854f0b; }
+.badge-tag      { background: var(--bg-2); color: var(--text-3); }
+.p-footer { display: flex; justify-content: space-between; align-items: center; }
+.p-stars { color: #ef9f27; font-size: 12px; }
+.p-rating-txt { font-size: 12px; color: var(--text-3); margin-left: 3px; }
+.p-city { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 3px; }
+
+/* ── Skeleton loader ──────────────────────────────────── */
+.skeleton {
+  background: var(--bg-card); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px;
+}
+.skel-line {
+  height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg) 50%, var(--bg-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: 9px;
+}
+
+/* ── Empty state ──────────────────────────────────────── */
+.empty-state {
+  grid-column: 1/-1; text-align: center;
+  padding: 60px 20px; color: var(--text-3);
+}
+.empty-state i { font-size: 40px; display: block; margin-bottom: 12px; color: var(--green-mid); }
+.empty-state p { font-size: 14px; line-height: 1.6; }
+
+/* ── Error state ──────────────────────────────────────── */
+.error-state {
+  grid-column: 1/-1; text-align: center;
+  padding: 40px 20px;
+}
+.error-state p { font-size: 14px; color: #a32d2d; margin-bottom: 12px; }
+.retry-btn {
+  height: 36px; padding: 0 18px; border-radius: 100px;
+  border: 1.5px solid var(--green); background: transparent;
+  color: var(--green); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+.retry-btn:hover { background: var(--green-light); }
+
+/* ── Bottom bar ───────────────────────────────────────── */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
+  background: rgba(247,249,247,0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding: 12px clamp(16px,4vw,48px);
+  display: flex; gap: 10px; justify-content: center;
+}
+.bb-btn {
+  height: 42px; padding: 0 22px; border-radius: 100px;
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer; transition: all .2s;
+}
+.bb-btn.primary { background: var(--green); color: #fff; border: none; }
+.bb-btn.primary:hover { background: var(--green-dark); }
+.bb-btn.ghost { background: transparent; border: 1.5px solid var(--border-2); color: var(--text-2); }
+.bb-btn.ghost:hover { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+
+/* ── Modal overlay ────────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,26,15,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200; align-items: flex-start;
+  justify-content: center; padding: 24px 16px; overflow-y: auto;
+}
+.modal-overlay.open { display: flex; animation: fadeIn .2s ease; }
+.modal {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  width: 100%; max-width: 500px;
+  padding: 28px; position: relative;
+  animation: fadeUp .25s ease;
+  border: 1.5px solid var(--border);
+}
+.modal-close {
+  position: absolute; top: 18px; right: 18px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid var(--border-2);
+  background: var(--bg-2); color: var(--text-2);
+  font-size: 18px; cursor: pointer; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.modal-close:hover { background: #fcebeb; color: #a32d2d; border-color: #f09595; }
+
+/* ── Provider modal ───────────────────────────────────── */
+.pm-header { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
+.pm-avatar { width: 54px; height: 54px; border-radius: 50%; font-family: var(--font-head); font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pm-name { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.pm-cat { font-size: 13px; color: var(--text-3); margin-top: 4px; }
+.pm-section { margin-bottom: 18px; }
+.pm-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+.pm-value { font-size: 14px; color: var(--text); line-height: 1.65; }
+.pm-phone { font-family: var(--font-head); font-size: 20px; font-weight: 600; color: var(--green-dark); }
+.pm-actions { display: flex; flex-direction: column; gap: 9px; }
+.pm-action {
+  width: 100%; height: 44px; border-radius: 100px; border: none;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none; transition: all .2s;
+}
+.pm-action.wa { background: var(--wa); color: #fff; }
+.pm-action.wa:hover { background: var(--wa-dark); }
+.pm-action.copy { background: var(--bg-2); color: var(--text-2); border: 1.5px solid var(--border-2); }
+.pm-action.copy:hover { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+.pm-rating-row { display: flex; align-items: center; gap: 10px; }
+.pm-stars { color: #ef9f27; font-size: 18px; }
+.pm-rating-num { font-family: var(--font-head); font-size: 22px; font-weight: 700; color: var(--text); }
+.pm-rating-count { font-size: 13px; color: var(--text-3); }
+.review-list { display: flex; flex-direction: column; gap: 0; }
+.review-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.review-item:last-child { border-bottom: none; }
+.review-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.review-stars { color: #ef9f27; font-size: 12px; margin: 2px 0; }
+.review-body { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+.review-date { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+/* ── Star selector ────────────────────────────────────── */
+.star-selector { display: flex; gap: 6px; margin: 8px 0; }
+.star-sel-btn {
+  width: 36px; height: 36px; border-radius: var(--radius);
+  border: 1.5px solid var(--border-2);
+  background: var(--bg-2); font-size: 18px; cursor: pointer;
+  color: var(--text-3); transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.star-sel-btn:hover { border-color: #ef9f27; color: #ef9f27; }
+.star-sel-btn.lit { background: #faeeda; border-color: #ef9f27; color: #ef9f27; }
+.form-input {
+  width: 100%; border: 1.5px solid var(--border-2);
+  border-radius: var(--radius); padding: 10px 14px;
+  font-size: 14px; color: var(--text); background: var(--bg);
+  outline: none; transition: border-color .2s;
+}
+.form-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(29,158,117,0.10); }
+.form-input::placeholder { color: var(--text-3); }
+textarea.form-input { height: 80px; resize: none; padding: 10px 14px; }
+.form-row { margin-bottom: 12px; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; display: block; }
+.form-select { width: 100%; height: 42px; border: 1.5px solid var(--border-2); border-radius: var(--radius); padding: 0 14px; font-size: 14px; color: var(--text); background: var(--bg); outline: none; cursor: pointer; transition: border-color .2s; }
+.form-select:focus { border-color: var(--green); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.submit-btn {
+  width: 100%; height: 46px; border-radius: 100px; border: none;
+  background: var(--green); color: #fff;
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s; margin-top: 4px;
+}
+.submit-btn:hover { background: var(--green-dark); }
+.submit-btn:disabled { opacity: .5; pointer-events: none; }
+.submit-note { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 8px; line-height: 1.5; }
+
+/* ── Toast ────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 76px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--green-deep); color: var(--green-mid);
+  font-size: 13px; font-weight: 500;
+  padding: 11px 22px; border-radius: 100px;
+  opacity: 0; pointer-events: none; z-index: 999;
+  transition: all .28s ease; white-space: nowrap;
+  border: 1px solid rgba(29,158,117,0.3);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: row; flex-wrap: wrap; }
+  .hero-stat { flex: 1; min-width: 100px; text-align: center; }
+  .search-row { flex-wrap: wrap; }
+  .city-select { min-width: unset; flex: 1; }
+  .form-grid { grid-template-columns: 1fr; }
+  .nav-tag { display: none; }
+  .provider-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ──────────────────────────────────────── -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo">
+    <div class="nav-logo-dot" aria-hidden="true"></div>
+    AfriServe
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag" id="nav-tag" aria-live="polite">Loading...</span>
+    <button class="nav-btn" onclick="openRegModal()" aria-label="List your service">
+      <i class="ti ti-plus" aria-hidden="true"></i> List service
+    </button>
+    <button class="nav-btn primary" onclick="location.href='admin.html'" aria-label="Admin panel">
+      <i class="ti ti-shield" aria-hidden="true"></i> Admin
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────── -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-grid">
+    <div class="fade-up">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-line" aria-hidden="true"></span>
+        Africa's verified service network
+      </div>
+      <h1>Find trusted<br><em>professionals</em><br>near you</h1>
+      <p class="hero-sub">Verified service providers across Africa — from plumbers to lawyers, mechanics to doctors. WhatsApp them directly in one tap.</p>
+      <div class="hero-actions">
+        <button class="btn-hero solid" onclick="document.querySelector('.search-input').focus()">
+          <i class="ti ti-search" aria-hidden="true"></i> Find a service
+        </button>
+        <button class="btn-hero outline" onclick="openRegModal()">
+          <i class="ti ti-plus" aria-hidden="true"></i> List your service — free
+        </button>
+      </div>
+    </div>
+    <div class="hero-stats" aria-label="Platform statistics">
+      <div class="hero-stat">
+        <div class="hero-stat-n" id="stat-providers">—</div>
+        <div class="hero-stat-l">verified providers</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n" id="stat-cities">—</div>
+        <div class="hero-stat-l">cities covered</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-n" id="stat-reviews">—</div>
+        <div class="hero-stat-l">customer reviews</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SEARCH BLOCK ─────────────────────────────────────── -->
+<div class="search-block" role="search">
+  <div class="search-block-inner">
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input
+          class="search-input" id="search-input" type="text"
+          placeholder="Search by name, service, or skill…"
+          aria-label="Search providers"
+          oninput="onSearch()"
+        />
+      </div>
+      <select class="city-select" id="city-filter" onchange="onSearch()" aria-label="Filter by city">
+        <option value="">All cities</option>
+        <option>Abuja</option><option>Lagos</option><option>Kano</option>
+        <option>Port Harcourt</option><option>Accra</option><option>Kumasi</option>
+        <option>Nairobi</option><option>Kampala</option><option>Dar es Salaam</option>
+      </select>
+      <button class="ai-btn" id="ai-btn" onclick="runAISearch()" aria-label="AI-powered search">
+        <i class="ti ti-sparkles" aria-hidden="true"></i> AI Find
+      </button>
+    </div>
+    <div class="chips" id="chip-row" role="group" aria-label="Filter by category">
+      <button class="chip active" onclick="setCategory('all',this)"><i class="ti ti-layout-grid" aria-hidden="true"></i> All</button>
+      <button class="chip" onclick="setCategory('Plumbing',this)"><i class="ti ti-droplet" aria-hidden="true"></i> Plumbing</button>
+      <button class="chip" onclick="setCategory('Electrical',this)"><i class="ti ti-bolt" aria-hidden="true"></i> Electrical</button>
+      <button class="chip" onclick="setCategory('Medical',this)"><i class="ti ti-stethoscope" aria-hidden="true"></i> Medical</button>
+      <button class="chip" onclick="setCategory('Legal',this)"><i class="ti ti-scale" aria-hidden="true"></i> Legal</button>
+      <button class="chip" onclick="setCategory('Tailoring',this)"><i class="ti ti-scissors" aria-hidden="true"></i> Tailoring</button>
+      <button class="chip" onclick="setCategory('Mechanic',this)"><i class="ti ti-tool" aria-hidden="true"></i> Mechanic</button>
+      <button class="chip" onclick="setCategory('Catering',this)"><i class="ti ti-chef-hat" aria-hidden="true"></i> Catering</button>
+      <button class="chip" onclick="setCategory('Tech',this)"><i class="ti ti-device-laptop" aria-hidden="true"></i> Tech</button>
+      <button class="chip" onclick="setCategory('Beauty',this)"><i class="ti ti-sparkles" aria-hidden="true"></i> Beauty</button>
+    </div>
+    <div class="ai-panel" id="ai-panel" role="status" aria-live="polite">
+      <div class="ai-panel-dot" aria-hidden="true"></div>
+      <div>
+        <div class="ai-panel-label">AI assistant</div>
+        <div class="ai-panel-text thinking" id="ai-panel-text">Thinking…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN CONTENT ─────────────────────────────────────── -->
+<main class="main" id="main-content">
+  <div class="section-hdr">
+    <h2 class="section-title">Service providers</h2>
+    <span class="section-count" id="result-count" aria-live="polite">Loading…</span>
+  </div>
+  <div class="provider-grid" id="provider-grid" aria-label="Provider listings" aria-live="polite">
+    <!-- Skeleton placeholders -->
+    <div class="skeleton"><div class="skel-line" style="width:55%;height:14px"></div><div class="skel-line" style="width:35%;height:10px"></div><div class="skel-line" style="width:80%;height:10px;margin-top:12px"></div><div class="skel-line" style="width:60%;height:10px"></div></div>
+    <div class="skeleton"><div class="skel-line" style="width:65%;height:14px"></div><div class="skel-line" style="width:40%;height:10px"></div><div class="skel-line" style="width:70%;height:10px;margin-top:12px"></div><div class="skel-line" style="width:50%;height:10px"></div></div>
+    <div class="skeleton"><div class="skel-line" style="width:50%;height:14px"></div><div class="skel-line" style="width:30%;height:10px"></div><div class="skel-line" style="width:85%;height:10px;margin-top:12px"></div><div class="skel-line" style="width:55%;height:10px"></div></div>
+    <div class="skeleton"><div class="skel-line" style="width:60%;height:14px"></div><div class="skel-line" style="width:38%;height:10px"></div><div class="skel-line" style="width:75%;height:10px;margin-top:12px"></div><div class="skel-line" style="width:45%;height:10px"></div></div>
+  </div>
+</main>
+
+<!-- ── BOTTOM BAR ───────────────────────────────────────── -->
+<div class="bottom-bar" role="complementary">
+  <button class="bb-btn primary" onclick="openRegModal()">
+    <i class="ti ti-plus" aria-hidden="true"></i> List your service — it's free
+  </button>
+  <button class="bb-btn ghost" onclick="shareApp()" aria-label="Share AfriServe">
+    <i class="ti ti-share" aria-hidden="true"></i> Share
+  </button>
+</div>
+
+<!-- ── PROVIDER DETAIL MODAL ───────────────────────────── -->
+<div class="modal-overlay" id="provider-modal" role="dialog" aria-modal="true" aria-label="Provider details" onclick="closeModalOnOverlay(event,'provider-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('provider-modal')" aria-label="Close">×</button>
+    <div id="provider-modal-body"></div>
+  </div>
+</div>
+
+<!-- ── REGISTRATION MODAL ──────────────────────────────── -->
+<div class="modal-overlay" id="reg-modal" role="dialog" aria-modal="true" aria-label="Register as a provider" onclick="closeModalOnOverlay(event,'reg-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reg-modal')" aria-label="Close">×</button>
+    <h2 style="font-family:var(--font-head);font-size:22px;font-weight:700;margin-bottom:6px">List your service</h2>
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:20px">Free to list. We verify all providers within 24–48 hours before going live.</p>
+    <div class="form-row"><label class="form-label" for="reg-name">Full name or business name</label><input class="form-input" id="reg-name" placeholder="e.g. Amaka Osei Plumbing" /></div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label" for="reg-cat">Service category</label><select class="form-select" id="reg-cat"><option>Plumbing</option><option>Electrical</option><option>Medical</option><option>Legal</option><option>Tailoring</option><option>Mechanic</option><option>Catering</option><option>Tech</option><option>Beauty</option><option>Other</option></select></div>
+      <div class="form-row"><label class="form-label" for="reg-city">City</label><select class="form-select" id="reg-city"><option>Abuja</option><option>Lagos</option><option>Kano</option><option>Port Harcourt</option><option>Accra</option><option>Kumasi</option><option>Nairobi</option><option>Kampala</option><option>Dar es Salaam</option></select></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label" for="reg-country">Country</label><select class="form-select" id="reg-country"><option>Nigeria</option><option>Ghana</option><option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Other</option></select></div>
+      <div class="form-row"><label class="form-label" for="reg-phone">WhatsApp number</label><input class="form-input" id="reg-phone" type="tel" placeholder="+234 800 000 0000" /></div>
+    </div>
+    <div class="form-row"><label class="form-label" for="reg-desc">About your service</label><textarea class="form-input" id="reg-desc" placeholder="Describe your experience, specialties, and years in business…"></textarea></div>
+    <button class="submit-btn" id="reg-submit-btn" onclick="submitRegistration()">
+      <i class="ti ti-send" aria-hidden="true"></i> Submit for verification
+    </button>
+    <p class="submit-note">By submitting, you agree to our terms. We'll WhatsApp you to verify before listing.</p>
+  </div>
+</div>
+
+<!-- ── TOAST ────────────────────────────────────────────── -->
+<div class="toast" id="toast" role="status" aria-live="assertive"></div>
+
+<!-- ── SCRIPTS ──────────────────────────────────────────── -->
+<script src="config.js"></script>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  // ── Init Supabase ──────────────────────────────────────
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── App state ──────────────────────────────────────────
+  let allProviders  = [];
+  let activeCategory = 'all';
+  let searchTimer    = null;
+  let selectedStars  = 0;
+  let currentProvider = null;
+
+  // ── Colour palette for avatars ─────────────────────────
+  const COLORS = [
+    {bg:'#e1f5ee',tx:'#0f6e56'},{bg:'#e6f1fb',tx:'#185fa5'},
+    {bg:'#faeeda',tx:'#854f0b'},{bg:'#fbeaf0',tx:'#993556'},
+    {bg:'#eaf3de',tx:'#3b6d11'},{bg:'#eeedfe',tx:'#534ab7'},
+    {bg:'#faece7',tx:'#993c1d'},{bg:'#f1efe8',tx:'#5f5e5a'},
+  ];
+  const colorFor = id => COLORS[(id - 1) % COLORS.length];
+  const initials = name => name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+  const stars    = r => '★'.repeat(Math.floor(r));
+  const waLink   = (phone, name) => {
+    const p = phone.replace(/\D/g,'');
+    const m = encodeURIComponent(`Hi ${name}, I found you on AfriServe and I'd like to enquire about your services.`);
+    return `https://wa.me/${p}?text=${m}`;
+  };
+
+  // ── Load providers ─────────────────────────────────────
+  async function loadProviders(filters = {}) {
+    try {
+      let query = supabase
+        .from('providers')
+        .select('*, reviews(id,reviewer,body,stars,created_at)')
+        .eq('status','active')
+        .order('top_rated', { ascending: false })
+        .order('rating',    { ascending: false });
+
+      if (filters.category && filters.category !== 'all') query = query.eq('category', filters.category);
+      if (filters.city)    query = query.eq('city', filters.city);
+      if (filters.search)  query = query.or(
+        `name.ilike.%${filters.search}%,category.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
+      );
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.error('loadProviders error:', err);
+      throw err;
+    }
+  }
+
+  // ── Render provider grid ───────────────────────────────
+  function renderGrid(list) {
+    const grid  = document.getElementById('provider-grid');
+    const count = document.getElementById('result-count');
+
+    count.textContent = list.length === 0
+      ? 'No results'
+      : `${list.length} provider${list.length !== 1 ? 's' : ''}`;
+
+    if (!list.length) {
+      grid.innerHTML = `
+        <div class="empty-state" role="status">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <p>No providers found for your search.<br>Try a different category or city.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map((p, i) => {
+      const c = colorFor(p.id);
+      return `
+      <article class="p-card" style="animation-delay:${i*40}ms"
+               onclick="openProvider(${p.id})"
+               tabindex="0" role="button"
+               aria-label="View ${p.name}, ${p.category} in ${p.city}"
+               onkeydown="if(event.key==='Enter')openProvider(${p.id})">
+        <div class="p-card-top">
+          <div class="avatar" style="background:${c.bg};color:${c.tx}" aria-hidden="true">
+            ${p.initials || initials(p.name)}
+          </div>
+          <div>
+            <div class="p-name">${p.name}</div>
+            <div class="p-cat">${p.category}</div>
+          </div>
+        </div>
+        <div class="p-badges">
+          ${p.verified ? '<span class="badge badge-verified"><i class="ti ti-shield-check" aria-hidden="true"></i> Verified</span>' : ''}
+          ${p.top_rated ? '<span class="badge badge-top">Top rated</span>' : ''}
+          ${p.tags && p.tags[0] ? `<span class="badge badge-tag">${p.tags[0]}</span>` : ''}
+        </div>
+        <div class="p-footer">
+          <div>
+            <span class="p-stars" aria-label="${p.rating} stars">${stars(p.rating)}</span>
+            <span class="p-rating-txt">${p.rating} (${p.review_count})</span>
+          </div>
+          <div class="p-city">
+            <i class="ti ti-map-pin" style="font-size:11px" aria-hidden="true"></i>${p.city}
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  // ── Open provider modal ────────────────────────────────
+  window.openProvider = async function(id) {
+    const p = allProviders.find(x => x.id === id);
+    if (!p) return;
+    currentProvider = p;
+    selectedStars = 0;
+    const c = colorFor(p.id);
+
+    const reviewsHtml = (p.reviews && p.reviews.length)
+      ? p.reviews.slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0,5).map(r => `
+        <div class="review-item">
+          <div class="review-name">${r.reviewer}</div>
+          <div class="review-stars">${'★'.repeat(r.stars)}</div>
+          <div class="review-body">${r.body}</div>
+        </div>`).join('')
+      : '<p style="font-size:13px;color:var(--text-3)">No reviews yet — be the first!</p>';
+
+    document.getElementById('provider-modal-body').innerHTML = `
+      <div class="pm-header">
+        <div class="pm-avatar" style="background:${c.bg};color:${c.tx}" aria-hidden="true">
+          ${p.initials || initials(p.name)}
+        </div>
+        <div>
+          <h2 class="pm-name">${p.name}</h2>
+          <p class="pm-cat">${p.category} · ${p.city}, ${p.country}</p>
+          <div class="p-badges" style="margin-top:6px">
+            ${p.verified ? '<span class="badge badge-verified"><i class="ti ti-shield-check" aria-hidden="true"></i> Verified</span>' : ''}
+            ${p.top_rated ? '<span class="badge badge-top">Top rated</span>' : ''}
+            ${(p.tags||[]).map(t=>`<span class="badge badge-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-label">About</div>
+        <p class="pm-value">${p.description || 'No description provided.'}</p>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-label">Contact</div>
+        <div class="pm-phone">${p.phone}</div>
+        <div class="pm-actions" style="margin-top:10px">
+          <a class="pm-action wa" href="${waLink(p.phone, p.name)}" target="_blank" rel="noopener"
+             aria-label="WhatsApp ${p.name}">
+            <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+            WhatsApp ${p.name.split(' ')[0]}
+          </a>
+          <button class="pm-action copy" onclick="copyNumber('${p.phone}')">
+            <i class="ti ti-copy" aria-hidden="true"></i> Copy number
+          </button>
+        </div>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-label">Rating</div>
+        <div class="pm-rating-row">
+          <span class="pm-stars" aria-label="${p.rating} out of 5 stars">${stars(p.rating)}</span>
+          <span class="pm-rating-num">${p.rating}</span>
+          <span class="pm-rating-count">(${p.review_count} reviews)</span>
+        </div>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-label">Reviews</div>
+        <div class="review-list">${reviewsHtml}</div>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-label">Leave a review</div>
+        <div class="star-selector" role="group" aria-label="Star rating">
+          ${[1,2,3,4,5].map(n=>`
+            <button class="star-sel-btn" id="star-${n}"
+              onclick="selectStar(${n})" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}
+        </div>
+        <div class="form-row">
+          <input class="form-input" id="review-name" placeholder="Your name" style="margin-bottom:8px" />
+          <textarea class="form-input" id="review-body" placeholder="Share your experience…" style="height:72px"></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitReview(${p.id})" style="margin-top:4px">
+          <i class="ti ti-send" aria-hidden="true"></i> Submit review
+        </button>
+      </div>`;
+
+    openModal('provider-modal');
+  };
+
+  // ── Star selector ──────────────────────────────────────
+  window.selectStar = function(n) {
+    selectedStars = n;
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.getElementById('star-'+i);
+      if (btn) btn.classList.toggle('lit', i <= n);
+    }
+  };
+
+  // ── Submit review ──────────────────────────────────────
+  window.submitReview = async function(providerId) {
+    const name = document.getElementById('review-name').value.trim();
+    const body = document.getElementById('review-body').value.trim();
+    if (!selectedStars) { showToast('Please select a star rating.'); return; }
+    if (!name)          { showToast('Please enter your name.'); return; }
+    if (!body)          { showToast('Please write a review.'); return; }
+
+    const btn = document.querySelector('#provider-modal-body .submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+    try {
+      const { error: revErr } = await supabase
+        .from('reviews')
+        .insert({ provider_id: providerId, reviewer: name, body, stars: selectedStars });
+      if (revErr) throw revErr;
+
+      // Recalculate average rating
+      const { data: allRevs } = await supabase
+        .from('reviews').select('stars').eq('provider_id', providerId);
+      const avg = allRevs.reduce((s,r) => s + r.stars, 0) / allRevs.length;
+      await supabase.from('providers').update({
+        rating: Math.round(avg * 10) / 10,
+        review_count: allRevs.length
+      }).eq('id', providerId);
+
+      showToast('Review submitted — thank you!');
+      closeModal('provider-modal');
+      await init(); // refresh grid
+    } catch (err) {
+      console.error(err);
+      showToast('Submission failed. Please try again.');
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-send"></i> Submit review'; }
+    }
+  };
+
+  // ── Submit registration ────────────────────────────────
+  window.submitRegistration = async function() {
+    const name  = document.getElementById('reg-name').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+    if (!name)  { showToast('Please enter your name.'); return; }
+    if (!phone) { showToast('Please enter your WhatsApp number.'); return; }
+
+    const btn = document.getElementById('reg-submit-btn');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    try {
+      const { error } = await supabase.from('pending_registrations').insert({
+        name,
+        category:    document.getElementById('reg-cat').value,
+        city:        document.getElementById('reg-city').value,
+        country:     document.getElementById('reg-country').value,
+        phone,
+        description: document.getElementById('reg-desc').value.trim(),
+      });
+      if (error) throw error;
+      closeModal('reg-modal');
+      showToast('Submitted! We will verify you within 48 hours.');
+      // Clear form
+      ['reg-name','reg-phone','reg-desc'].forEach(id => { document.getElementById(id).value = ''; });
+    } catch (err) {
+      console.error(err);
+      showToast('Submission failed. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-send"></i> Submit for verification';
+    }
+  };
+
+  // ── AI Search ──────────────────────────────────────────
+  window.runAISearch = async function() {
+    const q    = document.getElementById('search-input').value.trim();
+    const city = document.getElementById('city-filter').value;
+    const panel = document.getElementById('ai-panel');
+    const txt   = document.getElementById('ai-panel-text');
+    const btn   = document.getElementById('ai-btn');
+
+    panel.classList.add('visible');
+    txt.className = 'ai-panel-text thinking';
+    txt.textContent = 'Thinking…';
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="ti ti-sparkles spin" aria-hidden="true"></i> Thinking…';
+
+    const ctx = `You are AfriServe, an AI assistant for a verified local services directory in Africa.
+Available providers: ${JSON.stringify(allProviders.map(p=>({name:p.name,category:p.category,city:p.city,country:p.country,rating:p.rating,tags:p.tags,desc:p.description?.substring(0,80)})))}.
+User query: "${q || 'general recommendation'}"${city ? ` in ${city}` : ''}.
+Give a warm, specific 2-3 sentence recommendation naming actual providers if relevant. Plain text only.`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: ctx }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.map(c => c.text || '').join('') || 'Check the listings above for great options!';
+      txt.className = 'ai-panel-text';
+      txt.textContent = text;
+    } catch {
+      txt.className = 'ai-panel-text';
+      txt.textContent = 'Several verified providers are available. Check the listings above.';
+    } finally {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<i class="ti ti-sparkles" aria-hidden="true"></i> AI Find';
+    }
+    onSearch();
+  };
+
+  // ── Search / filter ────────────────────────────────────
+  window.onSearch = function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 280);
+  };
+
+  window.setCategory = function(cat, btn) {
+    activeCategory = cat;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  };
+
+  function applyFilters() {
+    const q    = document.getElementById('search-input').value.toLowerCase().trim();
+    const city = document.getElementById('city-filter').value;
+    const filtered = allProviders.filter(p => {
+      const mq   = !q   || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q) || p.city.toLowerCase().includes(q);
+      const mcat = activeCategory === 'all' || p.category === activeCategory;
+      const mci  = !city || p.city === city;
+      return mq && mcat && mci;
+    });
+    renderGrid(filtered);
+  }
+
+  // ── Stats ──────────────────────────────────────────────
+  function updateStats(providers) {
+    const cities = [...new Set(providers.map(p => p.city))].length;
+    const reviews = providers.reduce((s, p) => s + (p.review_count || 0), 0);
+    document.getElementById('stat-providers').textContent = providers.length;
+    document.getElementById('stat-cities').textContent    = cities;
+    document.getElementById('stat-reviews').textContent   = reviews.toLocaleString();
+    document.getElementById('nav-tag').textContent        = `${providers.length} providers · ${cities} cities`;
+  }
+
+  // ── Utilities ──────────────────────────────────────────
+  window.copyNumber = function(phone) {
+    navigator.clipboard.writeText(phone)
+      .then(() => showToast('Number copied to clipboard!'))
+      .catch(() => showToast('Phone: ' + phone));
+  };
+
+  window.openRegModal  = () => openModal('reg-modal');
+  window.closeModal    = id => document.getElementById(id).classList.remove('open');
+  window.closeModalOnOverlay = (e, id) => { if (e.target.id === id) closeModal(id); };
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+  window.shareApp = function() {
+    const shareData = { title: 'AfriServe', text: 'Find verified service professionals across Africa', url: window.location.href };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => showToast('Link copied to clipboard!'))
+        .catch(() => showToast('Share: ' + window.location.href));
+    }
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Keyboard: close modal on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      ['provider-modal','reg-modal'].forEach(id => {
+        document.getElementById(id).classList.remove('open');
+      });
+    }
+  });
+
+  // ── Init ───────────────────────────────────────────────
+  async function init() {
+    try {
+      allProviders = await loadProviders();
+      updateStats(allProviders);
+      renderGrid(allProviders);
+    } catch (err) {
+      document.getElementById('provider-grid').innerHTML = `
+        <div class="error-state" role="alert">
+          <p><i class="ti ti-wifi-off"></i> Could not load providers. Check your connection.</p>
+          <button class="retry-btn" onclick="init()">
+            <i class="ti ti-refresh"></i> Retry
+          </button>
+        </div>`;
+      document.getElementById('result-count').textContent = 'Error loading';
+      document.getElementById('nav-tag').textContent = 'Offline';
+    }
+  }
+
+  init();
+
+  // ── Service Worker (PWA) ───────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('AfriServe SW registered:', reg.scope))
+        .catch(err => console.error('SW registration failed:', err));
+    });
+  }
+</script>
+</body>
+</html>
